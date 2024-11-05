@@ -1,7 +1,7 @@
 <div class="w-[100vw] h-[100vh] bg-white flex flex-row">
   <div class="w-[45%] bg-primary p-10 flex flex-col">
     <div class="flex flex-row justify-between items-center">
-      <button>
+      <button routerLink="/">
         <i class="pi pi-arrow-left text-2xl text-white"></i>
       </button>
       <p class="text-3xl text-white">Roomify</p>
@@ -20,11 +20,27 @@
     <div class="w-[50%] h-[40%] flex flex-col gap-y-6">
       <div class="flex flex-col gap-y-2">
         <label class="text-text" for="email">Email address</label>
-        <input id="email" type="email" pInputText [(ngModel)]="email" placeholder="Enter your email address here..." class="outline-none text-text px-4 py-3 border text-sm border-1 rounded-[6px] border-text focus:border-2 focus:border-primary" >
+        <input
+          id="email"
+          type="email"
+          pInputText
+          pTooltip="Enter your email"
+          tooltipPosition="right"
+          [(ngModel)]="email"
+          placeholder="Enter your email address here..."
+          class="outline-none text-text px-4 py-3 border text-sm border-1 rounded-[6px] border-[#cbd5e1] focus:border-2 focus:border-primary" >
       </div>
       <div class="flex flex-col gap-y-2">
-        <label class="text-text" for="email">Password</label>
-        <input id="email" type="email" pInputText [(ngModel)]="email" placeholder="Enter your password" class="outline-none text-text px-4 py-3 border text-sm border-1 rounded-[6px] border-text focus:border-2 focus:border-primary" >
+        <label class="text-text" for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          pInputText
+          pTooltip="Enter your password"
+          tooltipPosition="right"
+          [(ngModel)]="password"
+          placeholder="Enter your password"
+          class="outline-none text-text px-4 py-3 border text-sm border-1 rounded-[6px] border-[#cbd5e1] focus:border-2 focus:border-primary" >
       </div>
       <button class="bg-primary py-4 rounded-xl hover:opacity-95">
         <p class="text-white"><b>Continue</b></p>

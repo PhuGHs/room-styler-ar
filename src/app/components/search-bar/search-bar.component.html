@@ -1,0 +1,12 @@
+<div class="bg-white w-[450px] h-[40px] rounded-full px-4 py-2 flex flex-row items-center gap-x-4">
+  <i class="pi pi-search w-[5%]"></i>
+  <input
+    type="text"
+    placeholder="What are you looking for?"
+    [(ngModel)]="searchText"
+    class=" focus:outline-none w-[90%] text-text .placeholder-[#8C8C8C]"
+  >
+  <button class="w-[5%] items-center justify-center" (click)="clearSearch()">
+    <i class="pi pi-times text-text"></i>
+  </button>
+</div>

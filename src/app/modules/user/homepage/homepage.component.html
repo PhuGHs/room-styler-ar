@@ -1,1 +1,25 @@
-<p>homepage works!</p>
+<div class="h-full flex flex-col items-center">
+  <p-carousel [value]="images" [numVisible]="1" [numScroll]="1" circular showIndicators="true" showNavigators="false" autoplayInterval="3000">
+    <ng-template pTemplate="item" let-image>
+      <div class="flex items-center justify-center">
+        <img [src]="image.src" [alt]="image.alt" class="w-full">
+      </div>
+    </ng-template>
+  </p-carousel>
+
+  <div class="w-[90%] flex">
+    <section>
+      <div class="flex flex-row justify-between">
+        <h1 class="text-xl font-bold my-6">Highlight items</h1>
+        <button>
+          <h1 class="text-primary font-bold text-xl">View more</h1>
+        </button>
+      </div>
+      <p-carousel [value]="categories" [numVisible]="4" [numScroll]="3" circular showIndicators="true" showNavigators="true">
+        <ng-template pTemplate="item" let-category>
+          <app-category [category]="category"/>
+        </ng-template>
+      </p-carousel>
+    </section>
+  </div>
+</div>
