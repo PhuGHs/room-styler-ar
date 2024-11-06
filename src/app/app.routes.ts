@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './components/layout/layout.component';
 import { LoginComponent } from './modules/auth/login/login.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { AdminLayoutComponent } from './components/admin-layout/admin-layout.component';
 
 export const routes: Routes = [
   {
@@ -24,7 +26,25 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    children: [
+      {
+        path: 'categories',
+        loadComponent: () => import('./modules/admin/category-management-page/category-management-page.component').then(m => m.CategoryManagementPageComponent)
+      },
+      {
+        path: 'categories/:categoryId',
+        loadComponent: () => import('./modules/admin/product-management-page/product-management-page.component').then(m => m.ProductManagementPageComponent)
+      }
+    ]
+  },
+  {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: '**',
+    component: NotFoundComponent
   }
 ];
