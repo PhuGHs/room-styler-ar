@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { CategoryComponent } from '@app/components/category/category.component';
+import { ProductComponent } from '@app/components/product/product.component';
 import { Category } from '@app/models/Category';
 import { CarouselModule } from 'primeng/carousel';
 
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [CarouselModule, CategoryComponent],
+  imports: [CarouselModule, CategoryComponent, ProductComponent],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.scss'
 })
@@ -20,26 +21,14 @@ export class HomepageComponent {
     {
       categoryId: 1,
       categoryName: 'Chair',
-      categoryDescription: 'This is a chair',
-      categoryImage: 'https://winchair.vn/wp-content/uploads/2021/03/Ghe-Grado-chair-WC142-1.jpg'
+      categoryDescription: 'An elegant carpet makes you look more luxurious',
+      categoryImage: 'https://cb.scene7.com/is/image/Crate/cb_dSC_20241101_Furniture_DiningTables?bfc=on&wid=565&qlt=80'
     },
     {
       categoryId: 2,
-      categoryName: 'Chair',
-      categoryDescription: 'This is a chair',
-      categoryImage: 'https://winchair.vn/wp-content/uploads/2021/03/Ghe-Grado-chair-WC142-1.jpg'
-    },
-    {
-      categoryId: 3,
-      categoryName: 'Chair',
-      categoryDescription: 'This is a chair',
-      categoryImage: 'https://winchair.vn/wp-content/uploads/2021/03/Ghe-Grado-chair-WC142-1.jpg'
-    },
-    {
-      categoryId: 4,
-      categoryName: 'Chair',
-      categoryDescription: 'This is a chair',
-      categoryImage: 'https://winchair.vn/wp-content/uploads/2021/03/Ghe-Grado-chair-WC142-1.jpg'
+      categoryName: 'Wardrobe',
+      categoryDescription: 'An unlimited capacity for your clothes',
+      categoryImage: 'https://cb.scene7.com/is/image/Crate/cb_dSC_20241101_Furniture_HomeOffice?bfc=on&wid=565&qlt=80&op_sharpen=1'
     }
   ];
 }

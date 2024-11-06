@@ -1,0 +1,22 @@
+@keyframes slide-in {
+  0% {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.icon-container .icon {
+  animation: slide-in 0.5s forwards;
+}
+
+.text-container {
+  transition: transform 0.5s ease-in-out;
+}
+
+.icon-container .icon:hover + .text-container {
+  transform: translateX(10px); /* Push the text to the right when icon slides in */
+}

@@ -7,19 +7,47 @@
     </ng-template>
   </p-carousel>
 
-  <div class="w-[90%] flex">
-    <section>
-      <div class="flex flex-row justify-between">
-        <h1 class="text-xl font-bold my-6">Highlight items</h1>
-        <button>
-          <h1 class="text-primary font-bold text-xl">View more</h1>
-        </button>
-      </div>
-      <p-carousel [value]="categories" [numVisible]="4" [numScroll]="3" circular showIndicators="true" showNavigators="true">
-        <ng-template pTemplate="item" let-category>
-          <app-category [category]="category"/>
-        </ng-template>
-      </p-carousel>
-    </section>
-  </div>
+  <section class="w-[90%] flex flex-col">
+    <div class="flex flex-row justify-between">
+      <h1 class="text-xl font-bold my-6">Outstanding categories</h1>
+      <button>
+        <h1 class="text-primary font-bold text-xl">View more</h1>
+      </button>
+    </div>
+    <div class="flex flex-row justify-between">
+      <ng-container *ngFor="let item of categories">
+        <div class="w-[49.5%]">
+          <app-category [category]="item"/>
+        </div>
+      </ng-container>
+    </div>
+  </section>
+
+  <section class="w-[90%] flex flex-col">
+    <div class="flex flex-row justify-between">
+      <h1 class="text-xl font-bold my-6">Best sellers</h1>
+      <button>
+        <h1 class="text-primary font-bold text-xl">View more</h1>
+      </button>
+    </div>
+    <div class="grid grid-cols-5 gap-8">
+      <ng-container *ngFor="let item of [1,2,3,4,5]">
+        <app-product />
+      </ng-container>
+    </div>
+  </section>
+
+  <section class="w-[90%] flex flex-col">
+    <div class="flex flex-row justify-between">
+      <h1 class="text-xl font-bold my-6">New arrivals</h1>
+      <button>
+        <h1 class="text-primary font-bold text-xl">View more</h1>
+      </button>
+    </div>
+    <div class="grid grid-cols-5 gap-8">
+      <ng-container *ngFor="let item of [1,2,3,4,5,6, 7, 8, 9]">
+        <app-product />
+      </ng-container>
+    </div>
+  </section>
 </div>

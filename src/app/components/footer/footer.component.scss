@@ -1,0 +1,10 @@
+ul {
+  li {
+    color: #5A5959;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+      color: #7F001B ;
+    }
+  }
+}

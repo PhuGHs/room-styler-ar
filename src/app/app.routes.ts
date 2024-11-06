@@ -16,6 +16,10 @@ export const routes: Routes = [
         path: 'home',
         loadComponent: () => import('./modules/user/homepage/homepage.component').
           then(m => m.HomepageComponent)
+      },
+      {
+        path: 'products/:productId',
+        loadComponent: () => import('./modules/user/product-details-page/product-details-page.component').then(m => m.ProductDetailsPageComponent)
       }
     ]
   },
