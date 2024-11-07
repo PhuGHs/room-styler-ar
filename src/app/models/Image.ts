@@ -5,6 +5,7 @@ export interface Image {
 
 export interface ProductImage {
   productId: number,
-  imageId: number,
-  isMainImage: string
+  image: Image,
+  isMainImage: boolean
 }
+
