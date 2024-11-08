@@ -1,2 +1,28 @@
-<p>admin-layout works!</p>
-<router-outlet />
+<div class="flex flex-row h-full w-full">
+  <div class="w-[350px] bg-primary flex flex-col rounded-r-lg py-4">
+    <div class="flex items-center justify-center">
+      <img class="w-[180px] h-auto" src="./images/logo-white.png" alt="logo.png">
+    </div>
+    <ng-container *ngFor="let item of items">
+      <app-nav-button [prop]="item" />
+    </ng-container>
+    <div class="flex-grow"></div>
+    <div class="px-4 flex flex-row items-center justify-between">
+      <div class="flex flex-row gap-x-3 items-center">
+        <i class="pi pi-user text-white"></i>
+        <b class="text-white text-lg">Lê Văn Phú</b>
+      </div>
+      <button
+        routerLink="/login"
+        pTooltip="Sign out"
+        tooltipPosition="right"
+      >
+        <i class="pi pi-sign-out text-white text-lg"></i>
+      </button>
+    </div>
+  </div>
+  <div class="m-4">
+    <router-outlet />
+  </div>
+</div>
+

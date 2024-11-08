@@ -1,0 +1,18 @@
+.nav-button {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: white;
+  transform: scale(1.05);
+}
+
+.nav-button-select {
+  background-color: white;
+  transform: scale(1.05);
+}
+
+.nav-button:hover .nav-text,
+.nav-button:hover .nav-icon {
+  color: #7F001B;
+}

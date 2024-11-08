@@ -36,6 +36,10 @@ export const routes: Routes = [
       {
         path: 'categories/:categoryId',
         loadComponent: () => import('./modules/admin/product-management-page/product-management-page.component').then(m => m.ProductManagementPageComponent)
+      },
+      {
+        path: 'furniture-vr',
+        loadComponent: () => import('./modules/admin/furniture-virtual-room/furniture-virtual-room.component').then(m => m.FurnitureVirtualRoomComponent)
       }
     ]
   },
