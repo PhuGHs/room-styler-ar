@@ -1,0 +1,33 @@
+.mat-mdc-table {
+  background-color: white;
+
+
+  .mat-mdc-header-cell {
+    background-color: #dfe5ea;
+  }
+
+  .mat-mdc-row {
+    border-bottom: none;
+  }
+
+  .mat-mdc-paginator-outer-container {
+    background-color: white;
+  }
+
+  .mat-mdc-paginator-container {
+    background-color: white;
+  }
+}
+
+::ng-deep .mat-mdc-paginator-container {
+  background-color: white !important;
+}
+
+::ng-deep .mat-option {
+  background-color: white !important;
+}
+
+::ng-deep .mat-divider {
+  color: white;
+}
+

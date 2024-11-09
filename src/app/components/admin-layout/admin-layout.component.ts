@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavButton, NavButtonComponent } from '../nav-button/nav-button.component';
 import { TooltipModule } from 'primeng/tooltip';
+import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 
 @Component({
   selector: 'app-admin-layout',

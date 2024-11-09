@@ -1,0 +1,41 @@
+<div class="flex flex-col w-full h-full gap-y-4 mx-4">
+  <p-breadcrumb ></p-breadcrumb>
+  <p class="text-2xl text-primary">Product information</p>
+
+  <div class="flex flex-col gap-y-4">
+    <p class="text-xl">Image</p>
+    <app-product-image />
+  </div>
+
+  <div class="flex flex-col gap-y-4">
+    <mat-label>Product 3D model</mat-label>
+    <input matInput type="text" value="3.grf" class="w-[500px] p-3 text-text outline-none border border-1 rounded-[5px] border-[#BDBDBD]">
+  </div>
+
+  <div class="flex flex-row gap-x-20">
+    <div class="flex flex-col gap-y-4">
+      <mat-label>Product Name</mat-label>
+      <input matInput type="text" placeholder="Enter the product name" class="w-[500px] p-3 text-text outline-none border border-1 rounded-[5px] border-[#BDBDBD]">
+    </div>
+    <div class="flex flex-col gap-y-4">
+      <mat-label>Price</mat-label>
+      <input matInput type="number" placeholder="Enter the product name" class="w-[500px] p-3 text-text outline-none border border-1 rounded-[5px] border-[#BDBDBD]">
+    </div>
+  </div>
+
+  <div class="flex flex-row gap-x-20">
+    <div class="flex flex-col gap-y-4">
+      <mat-label>Description</mat-label>
+      <textarea name="" id="" class="w-[500px] text-text outline-none border border-1 rounded-[5px] border-[#BDBDBD] p-3 min-h-[120px]" placeholder="This shows your product with a specification"></textarea>
+    </div>
+    <div class="flex flex-col gap-y-4">
+      <mat-label>Description</mat-label>
+      <textarea name="" id="" class="w-[500px] text-text outline-none border border-1 rounded-[5px] border-[#BDBDBD] p-3 min-h-[120px]" placeholder="This shows your product with a specification"></textarea>
+    </div>
+  </div>
+
+  <button class="flex flex-row items-center justify-center gap-x-4 bg-primary w-[150px] px-6 py-2 rounded-[4px]">
+    <p class="text-white">Done</p>
+    <i class="pi pi-plus text-white"></i>
+  </button>
+</div>

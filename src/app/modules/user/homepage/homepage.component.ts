@@ -13,7 +13,7 @@ import { CarouselModule } from 'primeng/carousel';
 })
 export class HomepageComponent {
   images = [
-    { src: '/images/1.png', alt: 'image-1.png'},
+    { src: '/images/1.png', alt: 'image-1   .png'},
     { src: '/images/2.png', alt: 'image-2.png'}
   ];
 

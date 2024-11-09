@@ -1,1 +1,93 @@
-<p>product-management-page works!</p>
+<div class="flex flex-col">
+  <div>
+    <p-breadcrumb [model]="items"></p-breadcrumb>
+  </div>
+  <div class="mx-4">
+    <div class="py-2 w-full flex flex-col gap-y-3 border border-[2px] rounded-lg border-[#CACFD4]">
+      <div class="flex flex-row justify-between w-full p-3">
+        <div class="flex flex-row items-center border-[#CACFD4] border border-1 rounded-lg py-2 px-3 gap-x-5 w-[350px]">
+          <i class="pi pi-search text-text"></i>
+          <input type="text" placeholder="Search here ..." class="outline-none text-text">
+        </div>
+        <div class="flex flex-row gap-x-3">
+          <button class="flex flex-row items-center bg-primary px-6 rounded-[4px] gap-x-3 hover:opacity-80">
+            <p class="text-white font-semibold">Add new product</p>
+            <i class="pi pi-plus text-white"></i>
+          </button>
+          <button class="flex flex-row items-center bg-primary px-6 rounded-[4px] gap-x-3 hover:opacity-80">
+            <p class="text-white font-semibold">Delete all</p>
+            <i class="pi pi-trash text-white"></i>
+          </button>
+        </div>
+      </div>
+      <table mat-table [dataSource]="productsTableData" matSort (matSortChange)="announceSortChange($event)">
+
+        <ng-container matColumnDef={{displayedColumns[0]}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Name" class="max-w-1/2">
+            {{displayedColumns[0]}}
+          </th>
+          <td mat-cell *matCellDef="let element" class="max-w-1/2 break-words"> {{element.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef={{displayedColumns[1]}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by ID" class="w-[10%]">
+            {{displayedColumns[1]}}
+          </th>
+          <td mat-cell *matCellDef="let element"> #{{element.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef={{displayedColumns[2]}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Price" class="w-[10%]">
+            {{displayedColumns[2]}}
+          </th>
+          <td mat-cell *matCellDef="let element"> {{element.price}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef={{displayedColumns[3]}}>
+          <th mat-header-cell *matHeaderCellDef class="w-[10%]">
+            {{displayedColumns[3]}}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <p class="cursor-pointer text-primary underline" (click)="openImageGallery()">Show images</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef={{displayedColumns[4]}}>
+          <th mat-header-cell *matHeaderCellDef class="w-[10%]">
+            {{displayedColumns[4]}}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <p class="cursor-pointer text-primary underline" (click)="openModelPage()">Show model</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef={{displayedColumns[5]}}>
+          <th mat-header-cell *matHeaderCellDef>
+            {{displayedColumns[5]}}
+          </th>
+          <td mat-cell *matCellDef="let element" class="w-[10%]">
+            <div class="flex flex-row gap-x-5">
+              <button routerLink="add-new-product">
+                <i class="pi pi-pencil text-primary"></i>
+              </button>
+              <button>
+                <i class="pi pi-trash text-primary"></i>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>
+
+  <mat-paginator
+    [pageSizeOptions]="pageSizeOptions"
+    showFirstLastButtons
+    aria-label="Select page of periodic elements"
+    class="rounded-lg bg-white flex items-center justify-between">
+  </mat-paginator>
+</div>
+

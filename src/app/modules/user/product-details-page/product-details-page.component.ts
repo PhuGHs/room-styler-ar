@@ -7,11 +7,12 @@ import { VndCurrencyPipe } from '@app/pipes/vnd-currency.pipe';
 import { ProductImage } from '@app/models/Image';
 import { CommonModule } from '@angular/common';
 import {MatTabsModule} from '@angular/material/tabs';
+import { BreadcrumbComponent } from '@app/components/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-product-details-page',
   standalone: true,
-  imports: [CommonModule, BreadcrumbModule, VndCurrencyPipe, MatTabsModule],
+  imports: [CommonModule, BreadcrumbComponent, VndCurrencyPipe, MatTabsModule],
   templateUrl: './product-details-page.component.html',
   styleUrl: './product-details-page.component.scss'
 })
