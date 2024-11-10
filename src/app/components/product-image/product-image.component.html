@@ -1,8 +1,9 @@
 <div class="">
   <div class="flex flex-col flex-wrap gap-4 mb-4 border border-[1px] border-[#BDBDBD] p-3 rounded-lg">
-    <div
+    <div class="flex flex-row gap-x-2">
+      <div
       *ngFor="let image of uploadedImages"
-      class="relative w-36 h-36 group"
+      class="relative w-36 h-36 group flex flex-row"
     >
       <img
         [src]="image.preview"
@@ -54,6 +55,7 @@
           <span class="mt-2 block text-sm text-gray-600">Add Image</span>
         </div>
       </button>
+    </div>
     </div>
     <div class="flex flex-col text-lighttext text-sm">
       <p class="text-[#fca5a5]">*The first one would be thumbnail image</p>

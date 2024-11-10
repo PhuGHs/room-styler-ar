@@ -9,7 +9,7 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, NavButtonComponent, NavButtonComponent, TooltipModule, RouterModule],
+  imports: [RouterOutlet, CommonModule, NavButtonComponent, NavButtonComponent, TooltipModule, RouterModule, BreadcrumbComponent],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss'
 })

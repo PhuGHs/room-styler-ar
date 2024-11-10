@@ -8,7 +8,7 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
   standalone: true,
   imports: [BreadcrumbModule],
   templateUrl: './breadcrumb.component.html',
-  styleUrl: './breadcrumb.component.scss'
+  styleUrls: ['./breadcrumb.component.scss']
 })
 export class BreadcrumbComponent implements OnInit {
   breadcrumbItems: MenuItem[] = [];
@@ -18,14 +18,14 @@ export class BreadcrumbComponent implements OnInit {
   ngOnInit(): void {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.updateBreadcrumbs(this.route.root);
+        this.breadcrumbItems = [];
+        this.buildBreadcrumbTrail(this.route.root);
       }
     });
   }
 
-  private updateBreadcrumbs(route: ActivatedRoute, url: string = '', breadcrumbs: MenuItem[] = []) {
+  private buildBreadcrumbTrail(route: ActivatedRoute, url: string = '', breadcrumbs: MenuItem[] = []) {
     const children: ActivatedRoute[] = route.children;
-
     if (children.length === 0) {
       this.breadcrumbItems = breadcrumbs;
       return;
@@ -33,8 +33,7 @@ export class BreadcrumbComponent implements OnInit {
 
     for (const child of children) {
       const routeURL: string = child.snapshot.url.map(segment => segment.path).join('/');
-
-      if (routeURL !== '') {
+      if (routeURL) {
         url += `/${routeURL}`;
       }
 
@@ -43,7 +42,7 @@ export class BreadcrumbComponent implements OnInit {
         breadcrumbs.push({ label, url });
       }
 
-      this.updateBreadcrumbs(child, url, breadcrumbs);
+      this.buildBreadcrumbTrail(child, url, breadcrumbs);
     }
   }
 }
