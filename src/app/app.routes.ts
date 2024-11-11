@@ -3,6 +3,7 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { LoginComponent } from './modules/auth/login/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { AdminLayoutComponent } from './components/admin-layout/admin-layout.component';
+import { AuthGuard } from './guard/auth.guard';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'categories',
