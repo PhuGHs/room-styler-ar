@@ -1,8 +1,27 @@
-<h2 mat-dialog-title>Title</h2>
+<div class="flex items-center justify-end p-3" (click)="closeModal()">
+  <i class="pi pi-times cursor-pointer"></i>
+</div>
 <mat-dialog-content>
-  <p>Here is the model</p>
+  <div class="h-full w-full flex flex-row justify-between">
+    <div class="canvas-container w-[60%] h-full">
+      <canvas #canvas></canvas>
+      <div class="controls-hint" *ngIf="showControlsHint">
+        <p>Left click + drag to rotate</p>
+        <p>Right click + drag to pan</p>
+        <p>Scroll to zoom</p>
+        <button mat-button (click)="hideControlsHint()">Got it!</button>
+      </div>
+      <div class="absolute bottom-2 right-2">
+        <button mat-button (click)="resetView()">Reset view</button>
+      </div>
+    </div>
+    <div class="w-[38%] flex flex-col justify-between gap-y-2">
+      <div>
+        <p class="text-2xl text-text">Folding table with 4 chairs around (Stainless steel)</p>
+        <p class="text-primary font-bold text-xl">981.000 VND</p>
+      </div>
+    </div>
+  </div>
 </mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button mat-dialog-close>Close</button>
-</mat-dialog-actions>
+
 

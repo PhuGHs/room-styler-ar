@@ -66,6 +66,10 @@ export class ProductManagementPageComponent implements AfterViewInit, OnInit {
   }
 
   openModelPage(): void {
-    this.matDialog.open(ShowModelDialogComponent);
+    this.matDialog.open(ShowModelDialogComponent, {
+      width: '80vw',
+      height: 'auto'
+    }
+    );
   }
 }
