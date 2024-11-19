@@ -4,6 +4,7 @@ import { LoginComponent } from './modules/auth/login/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { AdminLayoutComponent } from './components/admin-layout/admin-layout.component';
 import { AuthGuard } from './guard/auth.guard';
+import { ProductDetailsArComponent } from './modules/user/product-details-ar/product-details-ar.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +29,10 @@ export const routes: Routes = [
         data: { breadcrumb: 'Product details' }
       }
     ]
+  },
+  {
+    path: 'ar',
+    component: ProductDetailsArComponent
   },
   {
     path: 'admin',
