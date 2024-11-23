@@ -1,1 +1,41 @@
-<div #arContainer class="ar-container"></div>
+<div class="ar-container relative w-full h-screen">
+  <!-- AR Container -->
+  <div #arContainer class="w-full h-full"></div>
+
+  <!-- Loading Progress -->
+  <div *ngIf="!errorMessage && loadingProgress > 0 && loadingProgress < 100"
+       class="absolute top-16 left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-lg shadow-lg z-20">
+    <div class="text-center">
+      <p class="mb-2 font-medium">Loading 3D Models...</p>
+      <div class="w-48 h-2 bg-[#e5e7eb] rounded-full">
+        <div class="h-full bg-[#22c55e] rounded-full transition-all duration-300"
+             [style.width.%]="loadingProgress"></div>
+      </div>
+      <p class="mt-1 text-sm text-primary">{{loadingProgress.toFixed(0)}}%</p>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage"
+       class="absolute top-16 left-1/2 transform -translate-x-1/2 bg-[#fee2e2] border border-[#f87171] text-primary px-4 py-3 rounded z-20">
+    <p class="text-center">{{errorMessage}}</p>
+  </div>
+
+  <!-- Instructions - Only show when AR is active -->
+  <div *ngIf="!errorMessage && xrSessionActive"
+       class="absolute top-16 left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-lg shadow-lg z-20">
+    <div class="text-center">
+      <p class="mb-2 font-medium">Point your camera at a flat surface</p>
+      <p class="text-sm text-primary">Tap to place the 3D model</p>
+    </div>
+  </div>
+
+  <!-- Model Controls - Only show when AR is active -->
+  <div *ngIf="xrSessionActive"
+       class="absolute bottom-32 left-1/2 transform -translate-x-1/2 space-x-4 z-20">
+    <button (click)="loadAndPlaceModel()"
+            class="bg-[#3b82f6] hover:bg-[#1d4ed8] text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
+      Switch Model
+    </button>
+  </div>
+</div>

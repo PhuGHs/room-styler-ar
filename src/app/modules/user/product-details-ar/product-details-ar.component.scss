@@ -1,6 +1,45 @@
 .ar-container {
+  position: relative;
   width: 100%;
   height: 100vh;
-  position: relative;
-  background-color: black;
+  overflow: hidden;
+  background-color: #f8f9fa;
+
+  ::ng-deep {
+    // Style for AR button from Three.js
+    #ARButton {
+      position: fixed !important;
+      bottom: 85px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      padding: 12px 24px !important;
+      border: none !important;
+      border-radius: 4px !important;
+      background: #4CAF50 !important;
+      color: #fff !important;
+      font: inherit !important;
+      font-weight: 500 !important;
+      cursor: pointer !important;
+      transition: background-color 0.3s ease !important;
+      z-index: 30 !important;
+
+      &:hover {
+        background: #43a047 !important;
+      }
+
+      &:active {
+        background: #388e3c !important;
+      }
+    }
+  }
+}
+
+// Optional: Animation for loading progress
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.loading-progress {
+  animation: fadeIn 0.3s ease-in;
 }
