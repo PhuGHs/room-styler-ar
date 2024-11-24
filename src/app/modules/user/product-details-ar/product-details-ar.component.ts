@@ -4,6 +4,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { ARButton } from 'three/examples/jsm/webxr/ARButton.js';
 import { XREstimatedLight } from 'three/addons/webxr/XREstimatedLight.js';
 import { CommonModule } from '@angular/common';
+import { MatProgressBarModule } from '@angular/material/progress-bar'
+// import { Pane } from 'tweakpane';
+import eruda from 'eruda';
 
 interface ARButtonOptions {
   requiredFeatures: string[];
@@ -11,30 +14,48 @@ interface ARButtonOptions {
   domOverlay?: {
     root: HTMLElement;
   };
+  depthSensing?: {
+    usagePreference: ['cpu-optimized'],
+    dataFormatPreference: ['luminance-alpha']
+  }
+}
+
+interface PreloadedModel {
+  url: string;
+  model: THREE.Group;
+  loaded: boolean;
 }
 
 @Component({
   selector: 'app-product-details-ar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatProgressBarModule],
   templateUrl: './product-details-ar.component.html',
   styleUrl: './product-details-ar.component.scss'
 })
 export class ProductDetailsArComponent implements OnInit, OnDestroy {
   @ViewChild('arContainer', { static: true }) arContainer!: ElementRef;
 
+  //for pane
+  // private pane!: Pane;
 
+  //for three.js
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private reticle!: THREE.Mesh;
   private controller!: THREE.Group;
 
+  //for shadows
+  private plane!: THREE.Mesh;
+
   errorMessage: string = '';
   loadingProgress: number = 0;
 
   private loader = new GLTFLoader();
   private loadedModel: THREE.Group | null = null;
+  private preloadedModels: Map<string, PreloadedModel> = new Map();
+  private isModelPreloadingComplete: boolean = false;
   private modelUrls = [
     'models/coffe_pot_on_table.glb',
     'models/sofa.glb'
@@ -46,14 +67,24 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
   private localSpace: XRReferenceSpace | null = null;
   public xrSessionActive: boolean = false;
 
+  PARAMS = {
+    x: -1,
+    y: 1.7,
+    z: 3.4,
+    intensity: 9,
+    distance: 20,
+    angle: 0.2
+  };
+
   constructor() {
-    this.preloadModels();
   }
 
-  ngOnInit() {
-    this.checkARSupport().then(supported => {
+  async ngOnInit() {
+    await this.checkARSupport().then(supported => {
       if (supported) {
-        this.initializeAR();
+        this.preloadAllModels().then(() => {
+          this.initializeAR();
+        })
       } else {
         this.errorMessage = 'WebXR AR is not supported on this device or browser.';
       }
@@ -62,6 +93,47 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.cleanup();
+  }
+
+  private async preloadAllModels(): Promise<void> {
+    const totalModels = this.modelUrls.length;
+    let loadedModels = 0;
+
+    const loadPromises = this.modelUrls.map((url) => {
+      return new Promise<void>((resolve, reject) => {
+        this.loader.load(
+          url,
+          (gltf) => {
+            this.preloadedModels.set(url, {
+              url,
+              model: gltf.scene,
+              loaded: true
+            });
+            loadedModels++;
+            this.loadingProgress = (loadedModels / totalModels) * 100;
+            resolve();
+          },
+          (progress) => {
+            const progressPercentage = (progress.loaded / progress.total) * 100;
+            console.log(`Preloading ${url}: ${progressPercentage.toFixed(2)}%`);
+          },
+          (error) => {
+            console.error(`Error preloading model ${url}:`, error);
+            reject(error);
+          }
+        )
+      })
+    });
+
+    try {
+      await Promise.all(loadPromises);
+      console.log('All models preloaded successfully');
+      this.isModelPreloadingComplete = true;
+    } catch (error) {
+      console.error('Error during model preloading:', error);
+      this.errorMessage = 'Failed to preload some 3D models. Please try again.';
+      throw error;
+    }
   }
 
   private async checkARSupport(): Promise<boolean> {
@@ -80,28 +152,6 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
     }
   }
 
-  private preloadModels() {
-    this.modelUrls.forEach((url, index) => {
-      this.loader.load(
-        url,
-        (gltf) => {
-          console.log(`Preloaded model: ${url}`);
-          this.loadingProgress = ((index + 1) / this.modelUrls.length) * 100;
-        },
-        (progress) => {
-          const progressPercentage = (progress.loaded / progress.total) * 100;
-          console.log(`Loading ${url}: ${progressPercentage.toFixed(2)}%`);
-        },
-        (error) => {
-          console.error(`Error preloading model ${url}:`, error);
-          // Fix for TS18046: Type assertion for error
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-          this.errorMessage = `Error loading 3D model: ${errorMessage}`;
-        }
-      );
-    });
-  }
-
   private async initializeAR() {
     try {
       this.scene = new THREE.Scene();
@@ -118,9 +168,11 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
         alpha: true,
         powerPreference: 'high-performance'
       });
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.renderer.xr.enabled = true;
+      this.renderer.shadowMap.enabled = true;
+      this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
       this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -142,8 +194,15 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
 
   private setupARButton() {
     const arButtonOptions: ARButtonOptions = {
-      requiredFeatures: ['hit-test'],
-      optionalFeatures: ['light-estimation', 'depth-sensing', 'anchors']
+      requiredFeatures: ['hit-test', 'dom-overlay'],
+      optionalFeatures: ['light-estimation', 'depth-sensing', 'anchors'],
+      // domOverlay: {
+      //   root: document.body
+      // }
+      // depthSensing: {
+      //   usagePreference: ['cpu-optimized'],
+      //   dataFormatPreference: ['luminance-alpha']
+      // }
     };
 
     const arButton = ARButton.createButton(this.renderer, arButtonOptions);
@@ -158,6 +217,7 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
         const session = this.renderer.xr.getSession();
         if (session) {
           await this.initializeHitTestSource(session);
+          // await this.initDepthSensing(session);
         }
       } catch (error) {
         console.error('Error in session start:', error);
@@ -173,6 +233,15 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
     });
 
     document.body.appendChild(arButton);
+  }
+
+  private async initDepthSensing(session: XRSession) {
+    try {
+      const depthInfo = await session.requestReferenceSpace('local-floor');
+      console.log('Depth sensing initialized:', depthInfo);
+    } catch (error) {
+      console.error('Error initializing depth sensing:', error);
+    }
   }
 
   private async setupLighting() {
@@ -193,14 +262,55 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
         this.scene.environment = null;
       }
     });
+// // Ambient light for general illumination
+// const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+// this.scene.add(ambientLight);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(5, 5, 5);
-    directionalLight.castShadow = true;
+// // Directional light for shadows
+// const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+// dirLight.position.set(5, 5, 5); // Position the light higher and further from the scene
+// dirLight.castShadow = true;
 
-    this.scene.add(ambientLight, directionalLight);
-  }
+// // Configure shadow properties
+// dirLight.shadow.mapSize.width = 2048;
+// dirLight.shadow.mapSize.height = 2048;
+// dirLight.shadow.camera.near = 0.5;
+// dirLight.shadow.camera.far = 50;
+// dirLight.shadow.camera.left = -10;
+// dirLight.shadow.camera.right = 10;
+// dirLight.shadow.camera.top = 10;
+// dirLight.shadow.camera.bottom = -10;
+// dirLight.shadow.bias = -0.001; // Reduce shadow acne
+
+// this.scene.add(dirLight);
+
+// Optional: Add helper to visualize light position and shadow camera
+// const helper = new THREE.DirectionalLightHelper(dirLight, 5);
+// this.scene.add(helper);
+// const shadowHelper = new THREE.CameraHelper(dirLight.shadow.camera);
+// this.scene.add(shadowHelper);
+
+// this.addPlaneToSceneThatReceivesShadows();
+}
+
+private addPlaneToSceneThatReceivesShadows() {
+  const geometry = new THREE.PlaneGeometry(40, 40);
+  geometry.rotateX(-Math.PI / 2);
+
+  // 7. Using a more visible material for the ground
+  const material = new THREE.MeshStandardMaterial({
+      color: 0xcccccc,  // Lighter color to make shadows more visible
+      roughness: 1,
+      metalness: 0
+  });
+
+  this.plane = new THREE.Mesh(geometry, material);
+  this.plane.receiveShadow = true;
+  this.plane.position.y = 0; // Ensure it's at y=0
+  this.plane.visible = true;
+  this.plane.matrixAutoUpdate = true;
+  this.scene.add(this.plane);
+}
 
   private async setupController() {
     this.controller = this.renderer.xr.getController(0);
@@ -234,7 +344,6 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
           space: viewerSpace
         });
 
-        // Fix for TS2322: Explicit null check before assignment
         this.hitTestSource = hitTestSource || null;
         console.log('Hit test source initialized successfully');
       } else {
@@ -246,53 +355,51 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Rest of the component methods remain the same...
-  private onSelect = () => {
-    if (this.reticle.visible) {
-      this.loadAndPlaceModel();
+  private placePreloadedModel() {
+    if (!this.isModelPreloadingComplete) {
+      console.warn('Attempted to place model before preloading completed');
+      return;
     }
+
+    const currentModelUrl = this.modelUrls[this.currentModelIndex];
+    const preloadedModel = this.preloadedModels.get(currentModelUrl);
+
+    if (!preloadedModel || !preloadedModel.loaded) {
+      console.error('Model not found or not loaded:', currentModelUrl);
+      return;
+    }
+
+    if (this.loadedModel) {
+      this.scene.remove(this.loadedModel);
+    }
+
+    // Clone the preloaded model to allow multiple instances
+    this.loadedModel = preloadedModel.model.clone();
+
+    const boundingBox = new THREE.Box3().setFromObject(this.loadedModel);
+    const size = boundingBox.getSize(new THREE.Vector3());
+    const maxDimension = Math.max(size.x, size.y, size.z);
+    const scaleFactor = 1 / maxDimension;
+
+    this.loadedModel.scale.multiplyScalar(scaleFactor);
+    this.loadedModel.position.setFromMatrixPosition(this.reticle.matrix);
+    this.loadedModel.quaternion.setFromRotationMatrix(this.reticle.matrix);
+
+    this.loadedModel.traverse((node) => {
+      if (node instanceof THREE.Mesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+      }
+    });
+
+    this.scene.add(this.loadedModel);
+    this.currentModelIndex = (this.currentModelIndex + 1) % this.modelUrls.length;
   }
 
-  loadAndPlaceModel() {
-    const modelUrl = this.modelUrls[this.currentModelIndex];
-
-    this.loader.load(
-      modelUrl,
-      (gltf) => {
-        if (this.loadedModel) {
-          this.scene.remove(this.loadedModel);
-        }
-
-        this.loadedModel = gltf.scene;
-
-        const boundingBox = new THREE.Box3().setFromObject(this.loadedModel);
-        const size = boundingBox.getSize(new THREE.Vector3());
-        const maxDimension = Math.max(size.x, size.y, size.z);
-        const scaleFactor = 1 / maxDimension;
-
-        this.loadedModel.scale.multiplyScalar(scaleFactor);
-        this.loadedModel.position.setFromMatrixPosition(this.reticle.matrix);
-        this.loadedModel.quaternion.setFromRotationMatrix(this.reticle.matrix);
-
-        this.loadedModel.traverse((node) => {
-          if (node instanceof THREE.Mesh) {
-            node.castShadow = true;
-            node.receiveShadow = true;
-          }
-        });
-
-        this.scene.add(this.loadedModel);
-        this.currentModelIndex = (this.currentModelIndex + 1) % this.modelUrls.length;
-      },
-      (progress) => {
-        const progressPercentage = (progress.loaded / progress.total) * 100;
-        this.loadingProgress = progressPercentage;
-      },
-      (error) => {
-        console.error(`Error loading model ${modelUrl}:`, error);
-        this.errorMessage = 'Error loading 3D model. Please try again.';
-      }
-    );
+  private onSelect = () => {
+    if (this.reticle.visible && this.isModelPreloadingComplete) {
+      this.placePreloadedModel();
+    }
   }
 
   private render = (timestamp: number, frame?: XRFrame) => {
