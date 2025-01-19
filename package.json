@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start_m": "ng serve --ssl true --ssl-key ./ssl/cert.key --ssl-cert ./ssl/cert.crt --host 192.168.2.7",
+    "start_m": "ts-node auto-server.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -29,6 +29,7 @@
     "primeng": "^17.18.11",
     "rxjs": "~7.8.0",
     "three": "^0.170.0",
+    "ts-node": "^10.9.2",
     "tslib": "^2.3.0",
     "tweakpane": "^4.0.5",
     "zone.js": "~0.14.10"
@@ -38,6 +39,7 @@
     "@angular/cli": "^18.2.4",
     "@angular/compiler-cli": "^18.2.0",
     "@types/jasmine": "~5.1.0",
+    "@types/qrcode-terminal": "^0.12.2",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "eruda": "^3.4.1",
@@ -48,6 +50,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.4.47",
+    "qrcode-terminal": "^0.12.0",
     "tailwindcss": "^3.4.14",
     "typescript": "~5.5.2"
   }

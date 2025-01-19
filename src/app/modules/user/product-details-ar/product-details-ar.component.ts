@@ -45,6 +45,7 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
 
   private loader = new GLTFLoader();
   private loadedModel: THREE.Group | null = null;
+  // private loadedModelSize: THREE.Vector3 = null;
   private preloadedModels: Map<string, PreloadedModel> = new Map();
   private isModelPreloadingComplete: boolean = false;
   private modelUrls = [
@@ -59,6 +60,9 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
   public xrSessionActive: boolean = false;
 
   private depthDataTexture: THREE.DataTexture | null = null;
+  //plane detection
+  private planes: Map<XRPlane, number> = new Map<XRPlane, number>();
+  private minPlaneSize = 0.5;
 
   constructor() {}
 
@@ -174,7 +178,7 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
 
   private setupARButton() {
     const arButtonOptions: ARButtonOptions = {
-      requiredFeatures: ['hit-test'],
+      requiredFeatures: ['hit-test', 'plane-detection'],
       optionalFeatures: ['light-estimation']
     };
 
@@ -303,6 +307,7 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
 
   private render(timestamp: number, frame?: XRFrame) {
     if (frame && this.xrSessionActive && this.localSpace) {
+      this.renderPlane(timestamp, frame);
       const session = this.renderer.xr.getSession();
 
       if (session && !this.hitTestSource) {
@@ -327,6 +332,43 @@ export class ProductDetailsArComponent implements OnInit, OnDestroy {
     }
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  private renderPlane(timestamp: number, frame: XRFrame) {
+    const detectedPlanes = frame.detectedPlanes as XRPlaneSet;
+    for (const [plane, timestamp] of this.planes) {
+      if (!detectedPlanes?.has(plane)) {
+        this.planes.delete(plane);
+      }
+    }
+
+    detectedPlanes.forEach((plane) => {
+      if (this.planes.has(plane)) {
+        const currentLastChangedTime = this.planes.get(plane) as number;
+        if (plane.lastChangedTime > currentLastChangedTime) {
+          this.planes.set(plane, plane.lastChangedTime);
+        } else {
+          //handle previously seen plane that was not updated in current frame
+          // note that plane's pose relative to some other space may have changed
+        }
+      } else {
+        //handle new plane
+        this.planes.set(plane, plane.lastChangedTime);
+      }
+
+      const planePose = frame.getPose(plane.planeSpace, this.localSpace as XRReferenceSpace);
+      console.log(planePose?.transform.position);
+    })
+
+    frame.session.requestAnimationFrame(this.renderPlane);
+  }
+
+  //for plane detection
+  private calculatePlaneSize(polygon: DOMPointReadOnly[]): { width: number, depth: number } {
+    const points = polygon.map((point) => new THREE.Vector3(point.x, point.y, point.z));
+    const boundingBox = new THREE.Box3().setFromPoints(points);
+    const size = boundingBox.getSize(new THREE.Vector3());
+    return { width: size.x, depth: size.y };
   }
 
   private onWindowResize() {
